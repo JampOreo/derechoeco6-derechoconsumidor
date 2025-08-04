@@ -1,0 +1,5 @@
+Diseñador UI/UX: Olmedo
+Programador Frontend: Zarza
+Programador Backend: Medina
+Desarrollador de Chatbot: Medina
+Contenidista: Mattos, Forio
