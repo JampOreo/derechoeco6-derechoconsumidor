@@ -6,6 +6,7 @@
     <title>Defensa al Consumidor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500&display=swap" rel="stylesheet">
     <style>
         * {
@@ -70,6 +71,7 @@
             transition: all 0.25s ease;
             min-width: 220px;
             border: 2px solid transparent;
+            cursor: pointer;
         }
 
         .action-card:hover {
@@ -113,7 +115,7 @@
             border-radius: 18px;
             padding: 25px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            margin-right: 320px; /* Espacio para el sumario fijo a la derecha */
+            margin-right: 320px;
             transition: margin-right 0.3s ease;
         }
 
@@ -123,8 +125,8 @@
 
         .summary-wrapper {
             position: fixed;
-            top: 200px; /* Debajo del hero y quick-access */
-            right: 20px; /* Cambiado a la derecha */
+            top: 200px;
+            right: 20px;
             width: 300px;
             height: calc(100vh - 220px);
             z-index: 100;
@@ -214,7 +216,7 @@
         .floating-toggle {
             position: fixed;
             top: 200px;
-            right: 20px; /* Cambiado a la derecha */
+            right: 20px;
             width: 40px;
             height: 40px;
             background: #3f35bb;
@@ -268,7 +270,7 @@
         .floating-chat-btn {
             position: fixed;
             bottom: 30px;
-            left: 30px; /* Cambiado a la izquierda */
+            left: 30px;
             width: 60px;
             height: 60px;
             background: #3f35bb;
@@ -303,7 +305,7 @@
         .chat-modal {
             position: fixed;
             bottom: 100px;
-            left: 30px; /* Cambiado a la izquierda */
+            left: 30px;
             width: 380px;
             background: white;
             border-radius: 18px;
@@ -400,6 +402,68 @@
             background: #2a207a;
         }
 
+        /* Modal para contactos */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: #3f35bb;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-btn:hover {
+            color: #3f35bb;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .contact-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .contact-list li:last-child {
+            border-bottom: none;
+        }
+
         @media (max-width: 1100px) {
             .main-container {
                 flex-direction: column;
@@ -426,7 +490,6 @@
                 display: none;
             }
             
-            /* Ajustes del chatbot en móviles */
             .chat-modal {
                 left: 20px;
                 right: 20px;
@@ -467,11 +530,11 @@
     </div>
 
     <div class="quick-access">
-        <a href="#" class="action-card">
+        <a href="#" class="action-card" id="contactos-btn">
             Contactos y consejos
             <span>Guías y recursos útiles</span>
         </a>
-        <a href="#" class="action-card admin">
+        <a href="/auth/login" class="action-card admin" id="login-btn">
             Admin Login
             <span>Gestión del sistema</span>
         </a>
@@ -602,136 +665,159 @@
         </div>
     </div>
 
+    <!-- Modal para Contactos y Consejos -->
+    <div id="contactos-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contactos y Consejos</h2>
+                <button class="close-btn" id="close-contactos">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Recursos de Ayuda</h3>
+                <ul class="contact-list">
+                    <li><strong>Defensa del Consumidor Nacional:</strong> 0800-666-1518</li>
+                    <li><strong>Atención al Ciudadano:</strong> 0800-222-4837</li>
+                    <li><strong>Emergencias:</strong> 911</li>
+                    <li><strong>Asesoramiento Legal Gratuito:</strong> Consultar en colegios de abogados locales</li>
+                </ul>
+                <h3>Consejos Útiles</h3>
+                <p>• Guarde siempre los comprobantes de compra</p>
+                <p>• Lea detenidamente los contratos antes de firmar</p>
+                <p>• Conozca los plazos de garantía legal</p>
+                <p>• Ejercite su derecho de arrepentimiento cuando corresponda</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const summarySection = document.getElementById('summary-section');
-            const summaryToggleBtn = document.getElementById('summary-toggle-btn');
-            const floatingToggle = document.getElementById('floating-toggle');
-            const backToTopBtn = document.getElementById('back-to-top-btn');
-            const contentSection = document.getElementById('content');
-            const summaryLinks = document.querySelectorAll('.summary-list a');
-            
-            // Elementos del chatbot
-            const chatMessages = document.getElementById('chat-messages');
-            const userInput = document.getElementById('user-input');
-            const sendBtn = document.getElementById('send-btn');
-            const chatToggleBtn = document.getElementById('chat-toggle-btn');
-            const chatOverlay = document.getElementById('chat-overlay');
-            const chatModal = document.getElementById('chat-modal');
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatToggleBtn = document.getElementById('chat-toggle-btn');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const chatModal = document.getElementById('chat-modal');
 
-            // Estado del sumario
-            let isSummaryVisible = true;
+        // Función para añadir mensajes al chat
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            messageDiv.innerHTML = isUser ? text : '';
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return messageDiv;
+        }
 
-            // Función para toggle del sumario
-            function toggleSummary() {
-                isSummaryVisible = !isSummaryVisible;
-                
-                if (isSummaryVisible) {
-                    summarySection.classList.remove('collapsed');
-                    contentSection.classList.remove('full-width');
-                    summaryToggleBtn.innerHTML = '<span>▶</span> Ocultar';
-                    floatingToggle.style.display = 'none';
-                } else {
-                    summarySection.classList.add('collapsed');
-                    contentSection.classList.add('full-width');
-                    summaryToggleBtn.innerHTML = '<span>◀</span> Mostrar';
-                    floatingToggle.style.display = 'flex';
-                }
-            }
+        // Función para escribir mensajes con efecto de escritura
+        function typeMessage(element, text, callback = null) {
+            let i = 0;
+            const speed = 20;
 
-            // Función para volver al inicio
-            function scrollToTop() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
-
-            // Función para desplazarse a una sección
-            function scrollToSection(event) {
-                event.preventDefault();
-                const targetId = event.target.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-
-            // Función para actualizar el enlace activo
-            function updateActiveSummaryLink() {
-                const sections = document.querySelectorAll('.section');
-                let currentActiveIndex = -1;
-                
-                sections.forEach((section, index) => {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 150 && rect.bottom >= 150) {
-                        currentActiveIndex = index;
-                    }
-                });
-                
-                summaryLinks.forEach((link, index) => {
-                    if (index === currentActiveIndex) {
-                        link.classList.add('active');
+            function type() {
+                if (i < text.length) {
+                    if (text.substr(i, 4) === '<br>') {
+                        element.innerHTML += '<br>';
+                        i += 4;
+                    } else if (text.substr(i, 3) === '&lt') {
+                        element.innerHTML += text[i];
+                        i++;
                     } else {
-                        link.classList.remove('active');
+                        element.innerHTML += text[i];
+                        i++;
                     }
-                });
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
             }
+            type();
+        }
 
-            // Funciones del chatbot
-            function addMessage(text, isUser = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text;
-                chatMessages.appendChild(messageDiv);
+        // Función para mostrar indicador de escritura
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.classList.add('message', 'bot-message');
+            indicator.id = 'typing-indicator';
+            indicator.textContent = '';
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            let dots = 0;
+            const typingInterval = setInterval(() => {
+                indicator.textContent = '.'.repeat(dots % 4);
+                dots++;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            }, 500);
 
-            function sendMessage() {
-                const message = userInput.value.trim();
-                if (!message) return;
+            return { element: indicator, interval: typingInterval };
+        }
 
-                addMessage(message, true);
-                userInput.value = '';
+        // Función para ocultar indicador de escritura
+        function hideTypingIndicator(indicatorInfo) {
+            clearInterval(indicatorInfo.interval);
+            indicatorInfo.element.remove();
+        }
 
-                // Simular respuesta del bot
-                setTimeout(() => {
-                    addMessage("Gracias por tu consulta. Para asistencia personalizada, contacta con las autoridades de defensa al consumidor de tu localidad.");
-                }, 1000);
-            }
+        // Función para enviar mensaje
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
 
-            // Event listeners del sumario
-            summaryToggleBtn.addEventListener('click', toggleSummary);
-            floatingToggle.addEventListener('click', toggleSummary);
-            backToTopBtn.addEventListener('click', scrollToTop);
+            addMessage(message, true);
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
 
-            summaryLinks.forEach(link => {
-                link.addEventListener('click', scrollToSection);
-            });
+            const typingIndicator = showTypingIndicator();
 
-            window.addEventListener('scroll', updateActiveSummaryLink);
-            
-            // Event listeners del chatbot
-            sendBtn.addEventListener('click', sendMessage);
-            userInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') sendMessage();
-            });
+            setTimeout(() => {
+                // Simular llamada al backend (reemplazar con tu endpoint real)
+                fetch("/chatbot", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideTypingIndicator(typingIndicator);
+                    const botMessageDiv = addMessage('', false);
+                    typeMessage(botMessageDiv, data.reply || "Gracias por tu consulta. Para asistencia personalizada, contacta con las autoridades de defensa al consumidor.");
+                })
+                .catch(error => {
+                    hideTypingIndicator(typingIndicator);
+                    const botMessageDiv = addMessage('', false);
+                    typeMessage(botMessageDiv, "Hubo un error al procesar tu pregunta. Inténtalo de nuevo.");
+                })
+                .finally(() => {
+                    userInput.disabled = false;
+                    sendBtn.disabled = false;
+                    userInput.focus();
+                });
+            }, 300);
+        }
 
-            chatToggleBtn.addEventListener('click', () => {
-                chatModal.style.display = 'block';
-                chatOverlay.style.display = 'block';
-                userInput.focus();
-            });
-
-            chatOverlay.addEventListener('click', () => {
-                chatModal.style.display = 'none';
-                chatOverlay.style.display = 'none';
-            });
-
-            // Inicializar
-            updateActiveSummaryLink();
+        // Manejo del chatbot
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
         });
-    </script>
+
+        // Manejo del botón flotante y modal
+        chatToggleBtn.addEventListener('click', () => {
+            chatModal.style.display = 'block';
+            chatOverlay.style.display = 'block';
+        });
+
+        chatOverlay.addEventListener('click', () => {
+            chatModal.style.display = 'none';
+            chatOverlay.style.display = 'none';
+        });
+    });
+</script>
 </body>
 </html>
