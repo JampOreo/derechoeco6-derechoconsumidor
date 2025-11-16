@@ -691,6 +691,15 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // ========== MANTENER ESTAS VARIABLES DEL SUMARIO ==========
+        const summarySection = document.getElementById('summary-section');
+        const summaryToggleBtn = document.getElementById('summary-toggle-btn');
+        const floatingToggle = document.getElementById('floating-toggle');
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+        const contentSection = document.getElementById('content');
+        const summaryLinks = document.querySelectorAll('.summary-list a');
+        
+        // ========== VARIABLES DEL CHATBOT ==========
         const chatMessages = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
@@ -698,7 +707,62 @@
         const chatOverlay = document.getElementById('chat-overlay');
         const chatModal = document.getElementById('chat-modal');
 
-        // Función para añadir mensajes al chat
+        // ========== MANTENER ESTAS FUNCIONES DEL SUMARIO ==========
+        let isSummaryVisible = true;
+
+        function toggleSummary() {
+            isSummaryVisible = !isSummaryVisible;
+            
+            if (isSummaryVisible) {
+                summarySection.classList.remove('collapsed');
+                contentSection.classList.remove('full-width');
+                summaryToggleBtn.innerHTML = '<span>▶</span> Ocultar';
+                floatingToggle.style.display = 'none';
+            } else {
+                summarySection.classList.add('collapsed');
+                contentSection.classList.add('full-width');
+                summaryToggleBtn.innerHTML = '<span>◀</span> Mostrar';
+                floatingToggle.style.display = 'flex';
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function scrollToSection(event) {
+            event.preventDefault();
+            const targetId = event.target.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function updateActiveSummaryLink() {
+            const sections = document.querySelectorAll('.section');
+            let currentActiveIndex = -1;
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 150 && rect.bottom >= 150) {
+                    currentActiveIndex = index;
+                }
+            });
+            
+            summaryLinks.forEach((link, index) => {
+                if (index === currentActiveIndex) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        // ========== FUNCIONES DEL CHATBOT (EXACTAMENTE COMO TU CÓDIGO) ==========
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
@@ -709,7 +773,6 @@
             return messageDiv;
         }
 
-        // Función para escribir mensajes con efecto de escritura
         function typeMessage(element, text, callback = null) {
             let i = 0;
             const speed = 20;
@@ -735,7 +798,6 @@
             type();
         }
 
-        // Función para mostrar indicador de escritura
         function showTypingIndicator() {
             const indicator = document.createElement('div');
             indicator.classList.add('message', 'bot-message');
@@ -754,13 +816,11 @@
             return { element: indicator, interval: typingInterval };
         }
 
-        // Función para ocultar indicador de escritura
         function hideTypingIndicator(indicatorInfo) {
             clearInterval(indicatorInfo.interval);
             indicatorInfo.element.remove();
         }
 
-        // Función para enviar mensaje
         function sendMessage() {
             const message = userInput.value.trim();
             if (!message) return;
@@ -773,7 +833,6 @@
             const typingIndicator = showTypingIndicator();
 
             setTimeout(() => {
-                // Simular llamada al backend (reemplazar con tu endpoint real)
                 fetch("/chatbot", {
                     method: 'POST',
                     headers: {
@@ -786,7 +845,7 @@
                 .then(data => {
                     hideTypingIndicator(typingIndicator);
                     const botMessageDiv = addMessage('', false);
-                    typeMessage(botMessageDiv, data.reply || "Gracias por tu consulta. Para asistencia personalizada, contacta con las autoridades de defensa al consumidor.");
+                    typeMessage(botMessageDiv, data.reply || "Gracias por tu consulta sobre defensa al consumidor.");
                 })
                 .catch(error => {
                     hideTypingIndicator(typingIndicator);
@@ -801,22 +860,36 @@
             }, 300);
         }
 
-        // Manejo del chatbot
+        // ========== EVENT LISTENERS DEL SUMARIO (MANTENER) ==========
+        summaryToggleBtn.addEventListener('click', toggleSummary);
+        floatingToggle.addEventListener('click', toggleSummary);
+        backToTopBtn.addEventListener('click', scrollToTop);
+
+        summaryLinks.forEach(link => {
+            link.addEventListener('click', scrollToSection);
+        });
+
+        window.addEventListener('scroll', updateActiveSummaryLink);
+        
+        // ========== EVENT LISTENERS DEL CHATBOT ==========
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') sendMessage();
         });
 
-        // Manejo del botón flotante y modal
         chatToggleBtn.addEventListener('click', () => {
             chatModal.style.display = 'block';
             chatOverlay.style.display = 'block';
+            userInput.focus();
         });
 
         chatOverlay.addEventListener('click', () => {
             chatModal.style.display = 'none';
             chatOverlay.style.display = 'none';
         });
+
+        // Inicializar
+        updateActiveSummaryLink();
     });
 </script>
 </body>
