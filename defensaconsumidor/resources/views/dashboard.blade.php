@@ -26,36 +26,56 @@
         }
 
         .hero {
-            background: linear-gradient(135deg, #3f35bb 0%, #2e268a 100%);
-            color: white;
-            padding: 40px 20px;
+            background: 
+                linear-gradient(to bottom, 
+                    rgba(63, 53, 187, 0.95) 0%, 
+                    rgba(63, 53, 187, 0.7) 30%, 
+                    rgba(63, 53, 187, 0.4) 70%, 
+                    rgba(63, 53, 187, 0.1) 100%
+                ),
+                url('{{ asset('images/defensaalconsumidor.jpg') }}') center/cover no-repeat;
+            height: 100vh;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            color: white;
+            position: relative;
             width: 100%;
         }
 
         .hero h1 {
             font-family: 'IBM Plex Sans', sans-serif;
             font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 12px;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 2;
             letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            animation: fadeInUp 1s ease-out;
         }
 
         .hero p {
-            max-width: 750px;
+            font-size: 1.3rem;
+            max-width: 600px;
             margin: 0 auto;
-            font-size: 1.05rem;
             opacity: 0.95;
-            line-height: 1.75;
+            line-height: 1.6;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out 0.3s both;
         }
 
         .quick-access {
             display: flex;
             justify-content: center;
             gap: 20px;
-            padding: 20px 20px 30px;
+            padding: 40px 20px 50px;
             background: #f0f0f0;
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.8s ease-out 0.5s both;
         }
 
         .action-card {
@@ -68,15 +88,33 @@
             font-weight: 600;
             font-size: 1.05rem;
             box-shadow: 0 6px 16px rgba(63, 53, 187, 0.12);
-            transition: all 0.25s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             min-width: 220px;
             border: 2px solid transparent;
             cursor: pointer;
+            transform: translateY(0);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(63, 53, 187, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .action-card:hover::before {
+            left: 100%;
         }
 
         .action-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 22px rgba(63, 53, 187, 0.18);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(63, 53, 187, 0.25);
             border-color: #3f35bb;
         }
 
@@ -87,7 +125,7 @@
 
         .action-card.admin:hover {
             border-color: #e05a5a;
-            box-shadow: 0 8px 22px rgba(255, 107, 107, 0.15);
+            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.2);
         }
 
         .action-card span {
@@ -96,6 +134,11 @@
             font-weight: 400;
             font-size: 0.9rem;
             color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .action-card:hover span {
+            color: #3f35bb;
         }
 
         .main-container {
@@ -128,7 +171,8 @@
             top: 200px;
             right: 20px;
             width: 300px;
-            height: calc(100vh - 220px);
+            height: calc(100vh - 220px); /* LIMITADO: Solo hasta donde empieza el contenido jurídico */
+            max-height: calc(100vh - 220px); /* LIMITADO */
             z-index: 100;
             transition: transform 0.3s ease;
         }
@@ -142,6 +186,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            border: 2px solid #f0f3ff;
         }
 
         .summary-section.collapsed {
@@ -155,6 +200,7 @@
             margin-bottom: 15px;
             color: #3f35bb;
             text-align: center;
+            animation: fadeIn 0.6s ease-out;
         }
 
         .summary-list {
@@ -167,27 +213,66 @@
         .summary-list li {
             margin-bottom: 10px;
             font-size: 0.95rem;
+            animation: fadeInLeft 0.5s ease-out;
+            animation-fill-mode: both;
         }
+
+        .summary-list li:nth-child(1) { animation-delay: 0.1s; }
+        .summary-list li:nth-child(2) { animation-delay: 0.15s; }
+        .summary-list li:nth-child(3) { animation-delay: 0.2s; }
+        .summary-list li:nth-child(4) { animation-delay: 0.25s; }
+        .summary-list li:nth-child(5) { animation-delay: 0.3s; }
+        .summary-list li:nth-child(6) { animation-delay: 0.35s; }
+        .summary-list li:nth-child(7) { animation-delay: 0.4s; }
+        .summary-list li:nth-child(8) { animation-delay: 0.45s; }
+        .summary-list li:nth-child(9) { animation-delay: 0.5s; }
+        .summary-list li:nth-child(10) { animation-delay: 0.55s; }
+        .summary-list li:nth-child(11) { animation-delay: 0.6s; }
+        .summary-list li:nth-child(12) { animation-delay: 0.65s; }
+        .summary-list li:nth-child(13) { animation-delay: 0.7s; }
+        .summary-list li:nth-child(14) { animation-delay: 0.75s; }
 
         .summary-list a {
             color: #222;
             text-decoration: none;
             display: block;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            padding: 12px 16px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-list a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(63, 53, 187, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .summary-list a:hover::before {
+            left: 100%;
         }
 
         .summary-list a:hover,
         .summary-list a.active {
             background: #3f35bb;
             color: white;
+            transform: translateX(8px);
+            border-left-color: #2e268a;
+            box-shadow: 0 4px 12px rgba(63, 53, 187, 0.2);
         }
 
         .summary-controls {
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
         }
 
         .summary-toggle-btn,
@@ -196,29 +281,50 @@
             background: #3f35bb;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-toggle-btn::before,
+        .back-to-top-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .summary-toggle-btn:hover::before,
+        .back-to-top-btn:hover::before {
+            left: 100%;
         }
 
         .summary-toggle-btn:hover,
         .back-to-top-btn:hover {
             background: #2a207a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(63, 53, 187, 0.3);
         }
 
         .floating-toggle {
             position: fixed;
             top: 200px;
             right: 20px;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background: #3f35bb;
             color: white;
             border: none;
@@ -228,15 +334,40 @@
             display: none;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 20px;
+            box-shadow: 0 6px 20px rgba(63, 53, 187, 0.3);
+            transition: all 0.3s ease;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .floating-toggle:hover {
+            background: #2a207a;
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(63, 53, 187, 0.4);
         }
 
         .section {
-            margin-bottom: 30px;
-            padding-bottom: 15px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+        .section:nth-child(8) { animation-delay: 0.8s; }
+        .section:nth-child(9) { animation-delay: 0.9s; }
+        .section:nth-child(10) { animation-delay: 1.0s; }
+        .section:nth-child(11) { animation-delay: 1.1s; }
+        .section:nth-child(12) { animation-delay: 1.2s; }
+        .section:nth-child(13) { animation-delay: 1.3s; }
+        .section:nth-child(14) { animation-delay: 1.4s; }
 
         .section:last-child {
             border-bottom: none;
@@ -247,7 +378,15 @@
             font-weight: 600;
             font-size: 1.6rem;
             color: #3f35bb;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f3ff;
+            transition: all 0.3s ease;
+        }
+
+        .section h2:hover {
+            color: #2e268a;
+            border-bottom-color: #3f35bb;
         }
 
         .section h3 {
@@ -255,15 +394,25 @@
             font-weight: 500;
             font-size: 1.3rem;
             color: #2e268a;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .section h3:hover {
+            color: #3f35bb;
         }
 
         .section p {
             font-size: 1.05rem;
             line-height: 1.75;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: justify;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover p {
+            color: #333;
         }
 
         /* Chatbot a la izquierda */
@@ -271,24 +420,27 @@
             position: fixed;
             bottom: 30px;
             left: 30px;
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background: #3f35bb;
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(63, 53, 187, 0.3);
+            box-shadow: 0 8px 25px rgba(63, 53, 187, 0.4);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: bounceIn 0.8s ease-out 1s both;
         }
 
         .floating-chat-btn:hover {
             background: #2a207a;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 35px rgba(63, 53, 187, 0.6);
         }
 
         .chat-overlay {
@@ -300,29 +452,32 @@
             background: rgba(0,0,0,0.5);
             z-index: 2000;
             display: none;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .chat-modal {
             position: fixed;
-            bottom: 100px;
+            bottom: 120px;
             left: 30px;
             width: 380px;
             background: white;
-            border-radius: 18px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
             z-index: 2001;
             display: none;
+            animation: slideInUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .chat-header {
             background: #3f35bb;
             color: white;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
             font-weight: 600;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             letter-spacing: 0.3px;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .chat-messages {
@@ -336,13 +491,25 @@
 
         .message {
             max-width: 82%;
-            padding: 13px 18px;
-            margin-bottom: 18px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
             border-radius: 22px;
             line-height: 1.55;
             word-wrap: break-word;
             font-size: 1rem;
             position: relative;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .bot-message {
@@ -350,6 +517,7 @@
             color: #222;
             align-self: flex-start;
             border-bottom-left-radius: 6px;
+            animation: slideInLeft 0.3s ease-out;
         }
 
         .user-message {
@@ -357,49 +525,53 @@
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 6px;
+            animation: slideInRight 0.3s ease-out;
         }
 
         .chat-input {
             display: flex;
-            padding: 18px;
+            padding: 20px;
             background: white;
             border-top: 1px solid #f0f3ff;
         }
 
         .chat-input input {
             flex: 1;
-            padding: 14px 22px;
-            border: 1px solid #d4d9f7;
-            border-radius: 32px;
+            padding: 16px 24px;
+            border: 2px solid #d4d9f7;
+            border-radius: 35px;
             outline: none;
             font-size: 16px;
             font-family: 'Inter', sans-serif;
             background: #fbfcff;
+            transition: all 0.3s ease;
         }
 
         .chat-input input:focus {
             border-color: #3f35bb;
-            box-shadow: 0 0 0 3px rgba(63, 53, 187, 0.18);
+            box-shadow: 0 0 0 4px rgba(63, 53, 187, 0.15);
+            transform: scale(1.02);
         }
 
         .chat-input button {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background: #3f35bb;
             color: white;
             border: none;
             border-radius: 50%;
-            margin-left: 14px;
-            font-size: 20px;
+            margin-left: 15px;
+            font-size: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
         }
 
         .chat-input button:hover {
             background: #2a207a;
+            transform: scale(1.1) rotate(15deg);
         }
 
         /* Modal para contactos */
@@ -414,15 +586,28 @@
             z-index: 3000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .modal-content {
             background: white;
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 30px;
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .modal-header {
@@ -430,6 +615,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out 0.2s both;
         }
 
         .modal-header h2 {
@@ -441,13 +627,22 @@
         .close-btn {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: #666;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-btn:hover {
             color: #3f35bb;
+            background: #f0f3ff;
+            transform: rotate(90deg);
         }
 
         .contact-list {
@@ -456,12 +651,130 @@
         }
 
         .contact-list li {
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #eee;
+            animation: fadeInLeft 0.5s ease-out;
+            animation-fill-mode: both;
         }
+
+        .contact-list li:nth-child(1) { animation-delay: 0.3s; }
+        .contact-list li:nth-child(2) { animation-delay: 0.4s; }
+        .contact-list li:nth-child(3) { animation-delay: 0.5s; }
+        .contact-list li:nth-child(4) { animation-delay: 0.6s; }
 
         .contact-list li:last-child {
             border-bottom: none;
+        }
+
+        /* Animaciones CSS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Scroll suave */
+        html {
+            scroll-behavior: smooth;
         }
 
         @media (max-width: 1100px) {
@@ -495,10 +808,25 @@
                 right: 20px;
                 width: auto;
             }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
         }
 
         @media (max-width: 680px) {
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { 
+                font-size: 1.8rem; 
+                padding: 0 20px;
+            }
+            .hero p {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
             .chat-modal { 
                 width: calc(100% - 40px); 
                 left: 20px; 
@@ -519,6 +847,9 @@
             .floating-chat-btn {
                 left: 20px;
                 bottom: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
             }
         }
     </style>
@@ -604,7 +935,7 @@
 
             <div class="section" id="contenido-documento-venta">
                 <h2>Contenido del Documento de Venta</h2>
-                <p>El documento de venta es un instrumento esencial para garantizar la transparencia contractual. Debe contener, en idioma castellano, de forma clara y legible: descripción del bien, datos del vendedor, fabricante, distribuidor o importador, características de la garantía, plazos y condiciones de entrega, precio total a pagar e inclusiones de costos adicionales. Las cláusulas adicionales deben redactarse en letra destacada y ser firmadas por ambas partes. El consumidor debe recibir un ejemplar original del contrato. Esta obligación se mantiene independientemente de otras normativas sectoriales, asegurando que el usuario disponga de toda la información necesaria para ejercer sus derechos. La reglamentación puede simplificar el formato según la naturaleza del bien, siempre que se preserve su finalidad informativa.</p>
+                <p>El documento de venta es un instrumento esencial para garantizar la transparencia contractual. Debe contener, en idioma castellano, de forma clara и legible: descripción del bien, datos del vendedor, fabricante, distribuidor o importador, características de la garantía, plazos y condiciones de entrega, precio total a pagar e inclusiones de costos adicionales. Las cláusulas adicionales deben redactarse en letra destacada y ser firmadas por ambas partes. El consumidor debe recibir un ejemplar original del contrato. Esta obligación se mantiene independientemente de otras normativas sectoriales, asegurando que el usuario disponga de toda la información necesaria para ejercer sus derechos. La reglamentación puede simplificar el formato según la naturaleza del bien, siempre que se preserve su finalidad informativa.</p>
             </div>
 
             <div class="section" id="cosas-no-consumibles">
@@ -689,25 +1020,38 @@
         </div>
     </div>
 
+    <!-- Archivo JavaScript para animaciones avanzadas -->
+    <script src="{{ asset('js/animations.js') }}"></script>
+
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // ========== MANTENER ESTAS VARIABLES DEL SUMARIO ==========
+        // ========== VARIABLES ==========
         const summarySection = document.getElementById('summary-section');
         const summaryToggleBtn = document.getElementById('summary-toggle-btn');
         const floatingToggle = document.getElementById('floating-toggle');
         const backToTopBtn = document.getElementById('back-to-top-btn');
         const contentSection = document.getElementById('content');
         const summaryLinks = document.querySelectorAll('.summary-list a');
-        
-        // ========== VARIABLES DEL CHATBOT ==========
         const chatMessages = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const chatToggleBtn = document.getElementById('chat-toggle-btn');
         const chatOverlay = document.getElementById('chat-overlay');
         const chatModal = document.getElementById('chat-modal');
+        const contactosBtn = document.getElementById('contactos-btn');
+        const contactosModal = document.getElementById('contactos-modal');
+        const closeContactos = document.getElementById('close-contactos');
 
-        // ========== MANTENER ESTAS FUNCIONES DEL SUMARIO ==========
+        // ========== FUNCIONES PARA MODALES ==========
+        function openModal(modal) {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // ========== FUNCIONES DEL SUMARIO ==========
         let isSummaryVisible = true;
 
         function toggleSummary() {
@@ -762,7 +1106,7 @@
             });
         }
 
-        // ========== FUNCIONES DEL CHATBOT (EXACTAMENTE COMO TU CÓDIGO) ==========
+        // ========== FUNCIONES DEL CHATBOT ==========
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
@@ -860,7 +1204,7 @@
             }, 300);
         }
 
-        // ========== EVENT LISTENERS DEL SUMARIO (MANTENER) ==========
+        // ========== EVENT LISTENERS ==========
         summaryToggleBtn.addEventListener('click', toggleSummary);
         floatingToggle.addEventListener('click', toggleSummary);
         backToTopBtn.addEventListener('click', scrollToTop);
@@ -871,7 +1215,21 @@
 
         window.addEventListener('scroll', updateActiveSummaryLink);
         
-        // ========== EVENT LISTENERS DEL CHATBOT ==========
+        contactosBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal(contactosModal);
+        });
+
+        closeContactos.addEventListener('click', () => {
+            closeModal(contactosModal);
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === contactosModal) {
+                closeModal(contactosModal);
+            }
+        });
+
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') sendMessage();
