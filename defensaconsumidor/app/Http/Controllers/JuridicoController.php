@@ -52,4 +52,11 @@ class JuridicoController extends Controller
         $juridico->delete();
         return redirect()->route('juridico.index')->with('success', 'Contenido eliminado.');
     }
+    public function show(Juridico $juridico)
+    {
+        return view('juridico.show', [
+            'titulo' => $juridico->titulo,
+            'contenido' => $juridico->contenido // debe contener <h2>, <h3>, etc.
+        ]);
+    }
 }

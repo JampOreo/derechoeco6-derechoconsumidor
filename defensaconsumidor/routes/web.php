@@ -33,3 +33,8 @@ Route::get('/consejos', [ConsejosController::class, 'index'])->name('consejos.in
 
 // Chatbot (pública, POST)
 Route::post('/chatbot', [DashboardController::class, 'chatbot'])->name('chatbot');
+
+
+
+// Al final del archivo, dentro del grupo de rutas (si usás auth, etc.)
+Route::resource('juridico', JuridicoController::class); 
