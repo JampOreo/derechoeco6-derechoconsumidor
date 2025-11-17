@@ -1024,231 +1024,213 @@
     <script src="{{ asset('js/animations.js') }}"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ========== VARIABLES ==========
-        const summarySection = document.getElementById('summary-section');
-        const summaryToggleBtn = document.getElementById('summary-toggle-btn');
-        const floatingToggle = document.getElementById('floating-toggle');
-        const backToTopBtn = document.getElementById('back-to-top-btn');
-        const contentSection = document.getElementById('content');
-        const summaryLinks = document.querySelectorAll('.summary-list a');
-        const chatMessages = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const chatToggleBtn = document.getElementById('chat-toggle-btn');
-        const chatOverlay = document.getElementById('chat-overlay');
-        const chatModal = document.getElementById('chat-modal');
-        const contactosBtn = document.getElementById('contactos-btn');
-        const contactosModal = document.getElementById('contactos-modal');
-        const closeContactos = document.getElementById('close-contactos');
+document.addEventListener('DOMContentLoaded', function () {
+    // ========== VARIABLES ==========
+    const summarySection = document.getElementById('summary-section');
+    const summaryToggleBtn = document.getElementById('summary-toggle-btn');
+    const floatingToggle = document.getElementById('floating-toggle');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    const contentSection = document.getElementById('content');
+    const summaryLinks = document.querySelectorAll('.summary-list a');
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatToggleBtn = document.getElementById('chat-toggle-btn');
+    const chatOverlay = document.getElementById('chat-overlay');
+    const chatModal = document.getElementById('chat-modal');
+    const contactosBtn = document.getElementById('contactos-btn');
+    const contactosModal = document.getElementById('contactos-modal');
+    const closeContactos = document.getElementById('close-contactos');
 
-        // ========== FUNCIONES PARA MODALES ==========
-        function openModal(modal) {
-            modal.style.display = 'flex';
+    // ========== FUNCIONES PARA MODALES ==========
+    function openModal(modal) { modal.style.display = 'flex'; }
+    function closeModal(modal) { modal.style.display = 'none'; }
+
+    // ========== FUNCIONES DEL SUMARIO ==========
+    let isSummaryVisible = true;
+    function toggleSummary() {
+        isSummaryVisible = !isSummaryVisible;
+        if (isSummaryVisible) {
+            summarySection.classList.remove('collapsed');
+            contentSection.classList.remove('full-width');
+            summaryToggleBtn.innerHTML = '<span>▶</span> Ocultar';
+            floatingToggle.style.display = 'none';
+        } else {
+            summarySection.classList.add('collapsed');
+            contentSection.classList.add('full‑width');
+            summaryToggleBtn.innerHTML = '<span>◀</span> Mostrar';
+            floatingToggle.style.display = 'flex';
         }
+    }
 
-        function closeModal(modal) {
-            modal.style.display = 'none';
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSection(event) {
+        event.preventDefault();
+        const targetId = event.target.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
         }
+    }
 
-        // ========== FUNCIONES DEL SUMARIO ==========
-        let isSummaryVisible = true;
-
-        function toggleSummary() {
-            isSummaryVisible = !isSummaryVisible;
-            
-            if (isSummaryVisible) {
-                summarySection.classList.remove('collapsed');
-                contentSection.classList.remove('full-width');
-                summaryToggleBtn.innerHTML = '<span>▶</span> Ocultar';
-                floatingToggle.style.display = 'none';
+    function updateActiveSummaryLink() {
+        const sections = document.querySelectorAll('.section');
+        let currentActiveIndex = -1;
+        sections.forEach((section, index) => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 150 && rect.bottom >= 150) {
+                currentActiveIndex = index;
+            }
+        });
+        summaryLinks.forEach((link, index) => {
+            if (index === currentActiveIndex) {
+                link.classList.add('active');
             } else {
-                summarySection.classList.add('collapsed');
-                contentSection.classList.add('full-width');
-                summaryToggleBtn.innerHTML = '<span>◀</span> Mostrar';
-                floatingToggle.style.display = 'flex';
+                link.classList.remove('active');
             }
-        }
+        });
+    }
 
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
+    // ========== FUNCIONES DEL CHATBOT ==========
+    function addMessage(text, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', isUser ? 'user-message' : 'bot-message');
+        messageDiv.innerHTML = isUser ? text : '';
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return messageDiv;
+    }
 
-        function scrollToSection(event) {
-            event.preventDefault();
-            const targetId = event.target.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function updateActiveSummaryLink() {
-            const sections = document.querySelectorAll('.section');
-            let currentActiveIndex = -1;
-            
-            sections.forEach((section, index) => {
-                const rect = section.getBoundingClientRect();
-                if (rect.top <= 150 && rect.bottom >= 150) {
-                    currentActiveIndex = index;
-                }
-            });
-            
-            summaryLinks.forEach((link, index) => {
-                if (index === currentActiveIndex) {
-                    link.classList.add('active');
+    function typeMessage(element, text, callback = null) {
+        let i = 0;
+        const speed = 20;
+        function type() {
+            if (i < text.length) {
+                if (text.substr(i, 4) === '<br>') {
+                    element.innerHTML += '<br>';
+                    i += 4;
+                } else if (text.substr(i, 3) === '&lt') {
+                    element.innerHTML += text[i];
+                    i++;
                 } else {
-                    link.classList.remove('active');
+                    element.innerHTML += text[i];
+                    i++;
                 }
-            });
-        }
-
-        // ========== FUNCIONES DEL CHATBOT ==========
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
-            messageDiv.innerHTML = isUser ? text : '';
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return messageDiv;
-        }
-
-        function typeMessage(element, text, callback = null) {
-            let i = 0;
-            const speed = 20;
-
-            function type() {
-                if (i < text.length) {
-                    if (text.substr(i, 4) === '<br>') {
-                        element.innerHTML += '<br>';
-                        i += 4;
-                    } else if (text.substr(i, 3) === '&lt') {
-                        element.innerHTML += text[i];
-                        i++;
-                    } else {
-                        element.innerHTML += text[i];
-                        i++;
-                    }
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                    setTimeout(type, speed);
-                } else if (callback) {
-                    callback();
-                }
-            }
-            type();
-        }
-
-        function showTypingIndicator() {
-            const indicator = document.createElement('div');
-            indicator.classList.add('message', 'bot-message');
-            indicator.id = 'typing-indicator';
-            indicator.textContent = '';
-            chatMessages.appendChild(indicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            let dots = 0;
-            const typingInterval = setInterval(() => {
-                indicator.textContent = '.'.repeat(dots % 4);
-                dots++;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 500);
-
-            return { element: indicator, interval: typingInterval };
-        }
-
-        function hideTypingIndicator(indicatorInfo) {
-            clearInterval(indicatorInfo.interval);
-            indicatorInfo.element.remove();
-        }
-
-        function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) return;
-
-            addMessage(message, true);
-            userInput.value = '';
-            userInput.disabled = true;
-            sendBtn.disabled = true;
-
-            const typingIndicator = showTypingIndicator();
-
-            setTimeout(() => {
-                fetch("/chatbot", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    hideTypingIndicator(typingIndicator);
-                    const botMessageDiv = addMessage('', false);
-                    typeMessage(botMessageDiv, data.reply || "Gracias por tu consulta sobre defensa al consumidor.");
-                })
-                .catch(error => {
-                    hideTypingIndicator(typingIndicator);
-                    const botMessageDiv = addMessage('', false);
-                    typeMessage(botMessageDiv, "Hubo un error al procesar tu pregunta. Inténtalo de nuevo.");
-                })
-                .finally(() => {
-                    userInput.disabled = false;
-                    sendBtn.disabled = false;
-                    userInput.focus();
-                });
-            }, 300);
-        }
-
-        // ========== EVENT LISTENERS ==========
-        summaryToggleBtn.addEventListener('click', toggleSummary);
-        floatingToggle.addEventListener('click', toggleSummary);
-        backToTopBtn.addEventListener('click', scrollToTop);
-
-        summaryLinks.forEach(link => {
-            link.addEventListener('click', scrollToSection);
-        });
-
-        window.addEventListener('scroll', updateActiveSummaryLink);
-        
-        contactosBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal(contactosModal);
-        });
-
-        closeContactos.addEventListener('click', () => {
-            closeModal(contactosModal);
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === contactosModal) {
-                closeModal(contactosModal);
+                setTimeout(type, speed);
+            } else if (callback) {
+                callback();
             }
-        });
+        }
+        type();
+    }
 
-        sendBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') sendMessage();
-        });
+    function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.classList.add('message', 'bot-message');
+        indicator.id = 'typing-indicator';
+        indicator.textContent = '';
+        chatMessages.appendChild(indicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        chatToggleBtn.addEventListener('click', () => {
-            chatModal.style.display = 'block';
-            chatOverlay.style.display = 'block';
+        let dots = 0;
+        const typingInterval = setInterval(() => {
+            indicator.textContent = '.'.repeat(dots % 4);
+            dots++;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 500);
+
+        return { element: indicator, interval: typingInterval };
+    }
+
+    function hideTypingIndicator(indicatorInfo) {
+        clearInterval(indicatorInfo.interval);
+        indicatorInfo.element.remove();
+    }
+
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, true);
+        userInput.value = '';
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        const typingIndicator = showTypingIndicator();
+
+        setTimeout(async () => {
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer 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"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: "Responde claro y útil. No des recomendaciones finales. Siempre responde basado en la información jurídica de Posadas, Misiones, Argentina. Da respuestas cortas y consisas, sin usar asteriscos ni enumeraciones." },
+                            { role: "user", content: message }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator(typingIndicator);
+
+                const botMessageDiv = addMessage('', false);
+                const contenido = data.choices?.[0]?.message?.content || "No pude generar respuesta.";
+                typeMessage(botMessageDiv, contenido);
+
+            } catch (error) {
+                hideTypingIndicator(typingIndicator);
+                const botMessageDiv = addMessage('', false);
+                typeMessage(botMessageDiv, "Hubo un error al conectarse con la API de Groq.");
+            }
+
+            userInput.disabled = false;
+            sendBtn.disabled = false;
             userInput.focus();
-        });
+        }, 300);
+    }
 
-        chatOverlay.addEventListener('click', () => {
-            chatModal.style.display = 'none';
-            chatOverlay.style.display = 'none';
-        });
+    // ========== EVENT LISTENERS ==========
+    summaryToggleBtn.addEventListener('click', toggleSummary);
+    floatingToggle.addEventListener('click', toggleSummary);
+    backToTopBtn.addEventListener('click', scrollToTop);
+    summaryLinks.forEach(link => link.addEventListener('click', scrollToSection));
+    window.addEventListener('scroll', updateActiveSummaryLink);
 
-        // Inicializar
-        updateActiveSummaryLink();
+    contactosBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(contactosModal); });
+    closeContactos.addEventListener('click', () => { closeModal(contactosModal); });
+    window.addEventListener('click', (e) => { if (e.target === contactosModal) closeModal(contactosModal); });
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendMessage(); });
+
+    chatToggleBtn.addEventListener('click', () => {
+        chatModal.style.display = 'block';
+        chatOverlay.style.display = 'block';
+        userInput.focus();
     });
+
+    chatOverlay.addEventListener('click', () => {
+        chatModal.style.display = 'none';
+        chatOverlay.style.display = 'none';
+    });
+
+    // Inicializar
+    updateActiveSummaryLink();
+});
 </script>
+
+
+
+
 </body>
 </html>

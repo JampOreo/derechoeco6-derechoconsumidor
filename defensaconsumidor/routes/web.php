@@ -38,3 +38,6 @@ Route::post('/chatbot', [DashboardController::class, 'chatbot'])->name('chatbot'
 
 // Al final del archivo, dentro del grupo de rutas (si usás auth, etc.)
 Route::resource('juridico', JuridicoController::class); 
+
+
+Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'process']);
